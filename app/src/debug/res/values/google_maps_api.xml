@@ -1,0 +1,19 @@
+<resources>
+    <!--
+    TODO: Before you run your application, you need a Google Maps API key.
+
+    To get one, follow this link, follow the directions and press "Create" at the end:
+
+    https://console.developers.google.com/flows/enableapi?apiid=maps_android_backend&keyType=CLIENT_SIDE_ANDROID&r=C2:85:83:A3:53:61:64:85:4D:7C:33:B0:C3:FD:78:53:1C:D2:CA:33%3Bcom.example.rinchin.myapplication
+
+    You can also add your credentials to an existing key, using this line:
+    C2:85:83:A3:53:61:64:85:4D:7C:33:B0:C3:FD:78:53:1C:D2:CA:33;com.example.rinchin.myapplication
+
+    Alternatively, follow the directions here:
+    https://developers.google.com/maps/documentation/android/start#get-key
+
+    Once you have your key (it starts with "AIza"), replace the "google_maps_key"
+    string in this file.
+    -->
+    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyBrQBy_mQBkS83bGuv_WaEKXsegnBajHgE</string>
+</resources>
