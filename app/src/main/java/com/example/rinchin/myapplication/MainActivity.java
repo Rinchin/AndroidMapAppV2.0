@@ -40,6 +40,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.apache.http.HttpResponse;
@@ -79,6 +80,7 @@ public class MainActivity extends AppCompatActivity
 
     private GoogleMap mMap;
     ArrayList<myPoint> listLatLng = new ArrayList<>();
+    ArrayList<Marker> mList = new ArrayList<>();
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -87,21 +89,34 @@ public class MainActivity extends AppCompatActivity
 
     public MainActivity() {
         // Add a marker in Array and
-        listLatLng.add(new myPoint("Москва Билайн", new LatLng(55.773596, 37.609142), "Билайн"));
-        listLatLng.add(new myPoint("Test", new LatLng(55.773716, 37.606313), "Test"));
-        listLatLng.add(new myPoint("Test2", new LatLng(55.774452, 37.606320), "Test2"));
+        listLatLng.add(new myPoint("Москва Билайн", new LatLng(55.773596, 37.609142), "требуется помощь"));
+        listLatLng.add(new myPoint("Чип", new LatLng(55.773716, 37.606313), "Test"));
+        listLatLng.add(new myPoint("Дейл", new LatLng(55.774452, 37.606320), "Test2"));
 
 
     }
 
     String result = "";
-    static final String url = "http://sasha.starkov-it.ru/vint/serv.php";
+    static String url = "";
+
+    StringBuilder newUrl = new StringBuilder();
+
+
     Runnable runnable = new Runnable() {
         @Override
         public void run() {
             Message msg = handler.obtainMessage();
             Bundle bundle = new Bundle();
             InputStream inputStream = null;
+
+            newUrl.append("http://sasha.starkov-it.ru/vint/serv.php?");
+            newUrl.append("discript=" + listLatLng.get(0).comments + "&");
+            newUrl.append("name=Angel&");
+            newUrl.append("link=ya.ru&");
+            newUrl.append("lat=" + listLatLng.get(0).latLng.latitude + "&");
+            newUrl.append("lag=" + listLatLng.get(0).latLng.longitude);
+            url = newUrl.toString();
+
 
             try {
 
@@ -111,7 +126,7 @@ public class MainActivity extends AppCompatActivity
                 // make GET request to the given URL
 
                 HttpResponse httpResponse = httpclient.execute(new HttpGet(url));
-
+                Thread.sleep(500);
                 // receive response as inputStream
                 inputStream = httpResponse.getEntity().getContent();
 
@@ -128,6 +143,10 @@ public class MainActivity extends AppCompatActivity
             }
         }
     };
+
+
+    String urlTo = null;
+
 
     public View view = null;
     Handler handler = new Handler() {
@@ -200,18 +219,25 @@ public class MainActivity extends AppCompatActivity
                 // Obtain the SupportMapFragment and get notified when the map is ready to be used.
 
                 for (myPoint point : listLatLng) {
-                    mMap.addMarker(new MarkerOptions().position(new LatLng(point.latLng.latitude, point.latLng.longitude))
-                            .title(point.Name));
+                    if (listLatLng.indexOf(point)==0) {
+                        Marker me = mMap.addMarker(new MarkerOptions().position(new LatLng(point.latLng.latitude, point.latLng.longitude))
+                                .title(point.Name).snippet("Требуется помощь")
+                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
+
+                        mList.add(me);
+                    }
+                    else {
+                        Marker temp = mMap.addMarker(new MarkerOptions().position(new LatLng(point.latLng.latitude, point.latLng.longitude))
+                                .title(point.Name).snippet("Спешим на помощь"));
+                        mList.add(temp);
+                    }
                 }
 
 
-                mMap.addMarker(new MarkerOptions().position(new LatLng(1, 1)).title("Test"));
                 SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                         .findFragmentById(R.id.map);
                 mapFragment.getMapAsync(MainActivity.this);
             }
-
-
         });
 
 
@@ -295,12 +321,16 @@ public class MainActivity extends AppCompatActivity
         }
         mMap.setMyLocationEnabled(true);*/
 
+        //foreach in mMap marker
+
         //move the camera
         if (listLatLng.isEmpty())
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(listLatLng.get(0).latLng, 17));
         else
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(55.773596, 37.609142), 17));
-
+        for (Marker m: mList) {
+            m.showInfoWindow();
+        }
 
     }
 
